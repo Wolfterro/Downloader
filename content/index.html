@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Downloader</title>
+
+  <!-- Roboto -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #f4f6f8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 3rem;
+    }
+
+    h2 {
+      margin-top: 8px;
+      font-weight: 300;
+      color: #555;
+    }
+
+    .container {
+      margin-top: 40px;
+      background: #fff;
+      padding: 32px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      transition: 0.2s;
+    }
+
+    button:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+    }
+
+    button:hover:not(:disabled) {
+      background: #43a047;
+    }
+
+    .status {
+      text-align: center;
+      color: #333;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div style="text-align:center;">
+    <h1>Downloader</h1>
+    <h2>Baixe vídeos e áudios facilmente</h2>
+  </div>
+
+  <div class="container">
+    <input 
+      type="text" 
+      id="urlInput" 
+      placeholder="Cole aqui a URL do vídeo"
+    />
+
+    <select id="formatSelect">
+      <option value="mp3">mp3</option>
+      <option value="mp4">mp4</option>
+      <option value="webm">webm</option>
+      <option value="mkv">mkv</option>
+      <option value="wav">wav</option>
+    </select>
+
+    <button id="downloadBtn" disabled>
+      Download
+    </button>
+
+    <div class="status" id="status"></div>
+  </div>
+
+  <script>
+    const urlInput = document.getElementById("urlInput");
+    const formatSelect = document.getElementById("formatSelect");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const statusDiv = document.getElementById("status");
+
+    // Habilita/desabilita botão
+    urlInput.addEventListener("input", () => {
+      downloadBtn.disabled = urlInput.value.trim() === "";
+    });
+
+    downloadBtn.addEventListener("click", async () => {
+      const url = urlInput.value.trim();
+      const format = formatSelect.value;
+
+      statusDiv.textContent = "Processando download...";
+
+      try {
+        const response = await fetch("/downloader/download", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            url: url,
+            format: format
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data?.detail || "Erro ao gerar o arquivo.");
+        }
+
+        if (data.success && data.url) {
+          statusDiv.textContent = "Download iniciado!";
+
+          // Força download automático
+          const link = document.createElement("a");
+          link.href = data.url;
+          link.download = "";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } else {
+          statusDiv.textContent = "Falha ao gerar o arquivo.";
+        }
+      } catch (err) {
+        statusDiv.textContent = "Erro: " + err.message;
+      }
+    });
+  </script>
+</body>
+</html>
