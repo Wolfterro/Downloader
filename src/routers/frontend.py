@@ -6,7 +6,7 @@ router = APIRouter(prefix="", tags=["Frontend"])
 
 # GET
 # ---
-@router.get("/", response_model=dict)
+@router.get("/")
 async def root():
     """
     Frontend da aplicação.
