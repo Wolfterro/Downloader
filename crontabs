@@ -1,0 +1,9 @@
+# Downloader cleanup every hour
+0 * * * * rm /home/admin/Downloader/media/*.mp3
+0 * * * * rm /home/admin/Downloader/media/*.mp4
+0 * * * * rm /home/admin/Downloader/media/*.webm
+0 * * * * rm /home/admin/Downloader/media/*.wav
+0 * * * * rm /home/admin/Downloader/media/*.mkv
+
+# Downloader yt-dlp update every Monday
+0 0 * * 1 /home/admin/Downloader/venv/bin/pip install yt-dlp --upgrade
