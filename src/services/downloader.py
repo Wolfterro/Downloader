@@ -15,6 +15,7 @@ class DownloaderService(object):
                 "format": "bestaudio",
                 "outtmpl": "media/%(title)s.%(ext)s",
                 "overwrites": False,
+                "noplaylist": True,
                 "postprocessors": [{
                     "key": "FFmpegExtractAudio",
                     "preferredcodec": self.format,
@@ -24,7 +25,8 @@ class DownloaderService(object):
             ydl_opts = {
                 "format": self.format,
                 "outtmpl": "media/%(title)s.%(ext)s",
-                "overwrites": False
+                "overwrites": False,
+                "noplaylist": True
             }
 
         with ytdlp.YoutubeDL(ydl_opts) as ydl:
