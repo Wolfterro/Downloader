@@ -37,12 +37,12 @@
     }
 
     .container {
-      margin-top: 40px;
+      margin-top: 20px;
       background: #fff;
       padding: 32px;
       border-radius: 12px;
       width: 100%;
-      max-width: 500px;
+      max-width: 600px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.1);
       display: flex;
       flex-direction: column;
@@ -90,12 +90,14 @@
   </div>
 
   <div class="container">
+    <label for="formatSelect">URL:</label>
     <input 
       type="text" 
       id="urlInput" 
       placeholder="Cole aqui a URL do vídeo"
     />
 
+    <label for="formatSelect">Formato:</label>
     <select id="formatSelect">
       <option value="mp3">mp3</option>
       <option value="mp4">mp4</option>
@@ -112,6 +114,7 @@
   </div>
 
   <script>
+    let downloadProcessStarted = false;
     const urlInput = document.getElementById("urlInput");
     const formatSelect = document.getElementById("formatSelect");
     const downloadBtn = document.getElementById("downloadBtn");
@@ -119,7 +122,7 @@
 
     // Habilita/desabilita botão
     urlInput.addEventListener("input", () => {
-      downloadBtn.disabled = urlInput.value.trim() === "";
+      downloadBtn.disabled = urlInput.value.trim() === "" || downloadProcessStarted;
     });
 
     downloadBtn.addEventListener("click", async () => {
@@ -129,6 +132,10 @@
       statusDiv.textContent = "Processando download...";
 
       try {
+        // Desabilita botão de download enquanto envio é feito
+        downloadBtn.disabled = true;
+        downloadProcessStarted = true;
+
         const response = await fetch("/downloader/download", {
           method: "POST",
           headers: {
@@ -161,6 +168,10 @@
         }
       } catch (err) {
         statusDiv.textContent = "Erro: " + err.message;
+      } finally {
+        // Habilita botão de download novamente
+        downloadBtn.disabled = false;
+        downloadProcessStarted = false;
       }
     });
   </script>
