@@ -81,6 +81,9 @@ Depois disso, sua aplicação deverá estar rodando na porta 8000.
 Página principal:
 <img src="content/screenshots/screenshot2.png"></img>
 
+Página 404 (arquivo indisponível):
+<img src="content/screenshots/screenshot3.png"></img>
+
 Docs:
 <img src="content/screenshots/screenshot1.png"></img>
 
