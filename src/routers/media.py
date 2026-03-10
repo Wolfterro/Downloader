@@ -1,7 +1,7 @@
 import datetime
 import os
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from pathlib import Path
 
 import urllib
@@ -24,7 +24,8 @@ async def filename(filename: str):
     """
     file_path = MEDIA_DIR / filename
     if not file_path.exists():
-        raise HTTPException(status_code=404, detail="Arquivo não encontrado")
+        content = open("content/404.html", "r").read()
+        return HTMLResponse(content=content, status_code=404)
 
     return FileResponse(
         path=file_path,

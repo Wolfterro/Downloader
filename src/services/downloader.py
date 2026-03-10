@@ -1,3 +1,5 @@
+import time
+
 import yt_dlp as ytdlp
 import urllib.parse
 

@@ -1,5 +1,6 @@
 import os
 from fastapi import APIRouter, HTTPException
+from fastapi.concurrency import run_in_threadpool
 
 from src.core.utils import isValidUrl
 from src.schemas.downloader import DownloaderFileSchema
@@ -25,7 +26,7 @@ async def download_file(body: DownloaderFileSchema) -> dict:
         raise HTTPException(status_code=400, detail="URL inválida")
 
     downloader = DownloaderService(body)
-    download_url = downloader.download()
+    download_url = await run_in_threadpool(downloader.download)
 
     hostname = os.environ.get("HOSTNAME")
     download_url = f"{hostname}/{download_url}"

@@ -219,7 +219,7 @@
 
         if (data.success && data.url) {
           statusDiv.textContent = "Download iniciado!";
-          forceDownload(data.url);
+          await forceDownload(data.url);
           loadFiles(); // atualiza lista
         } else {
           statusDiv.textContent = "Falha ao gerar o arquivo.";
@@ -232,7 +232,20 @@
       }
     });
 
-    function forceDownload(url) {
+    async function forceDownload(url) {
+      // Verifica se a URL existe
+      // Caso contrário, ela será uma página HTML 404 e direcionamos para ela.
+      if (!url) {
+        window.location.href = '/media/404.html';
+        return;
+      }
+
+      const res = await fetch(url);
+      if (res.status === 404) {
+        window.location.href = url;
+        return;
+      }
+
       const link = document.createElement("a");
       link.href = url;
       link.download = "";
