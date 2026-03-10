@@ -1,3 +1,4 @@
+import os
 import time
 
 import yt_dlp as ytdlp
@@ -35,5 +36,9 @@ class DownloaderService(object):
 
         with ytdlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(self.url, download=True)
-            
-        return urllib.parse.quote(f"media/{info['title']}.{self.format}")
+            filename = ydl.prepare_filename(info)
+
+        if self.format in ["mp3", "wav"]:
+            filename = os.path.splitext(filename)[0] + f".{self.format}"
+
+        return urllib.parse.quote(filename)
