@@ -26,7 +26,13 @@ async def download_file(body: DownloaderFileSchema) -> dict:
         raise HTTPException(status_code=400, detail="URL inválida")
 
     downloader = DownloaderService(body)
-    download_url = await run_in_threadpool(downloader.download)
+    try:
+        download_url = await run_in_threadpool(downloader.download)
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, 
+            detail="Erro ao baixar o arquivo. Verifique a URL e tente novamente."
+        )
 
     hostname = os.environ.get("HOSTNAME")
     download_url = f"{hostname}/{download_url}"

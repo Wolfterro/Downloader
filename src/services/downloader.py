@@ -15,7 +15,7 @@ class DownloaderService(object):
     def download(self) -> str:
         if self.format in ["mp3", "wav"]:
             ydl_opts = {
-                "format": "bestaudio",
+                "format": "bestaudio/best",
                 "outtmpl": "media/%(title)s.%(ext)s",
                 "overwrites": False,
                 "noplaylist": True,
